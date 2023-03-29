@@ -115,7 +115,7 @@ impl Request {
             Self::ReqFundamentalData(msg) => msg.req_id = request_id,
             Self::ReqSecDefOptParams(msg) => msg.req_id = request_id,
             Self::ReqSoftDollarTiers(msg) => msg.req_id = request_id,
-            // Self::ReqMatchingSymbols(msg) => msg.req_id = request_id,
+            Self::MatchingSymbol(msg) => msg.req_id = request_id,
             Self::ReqSmartComponents(msg) => msg.req_id = request_id,
             Self::ReqPnl(msg) => msg.req_id = request_id,
             Self::CancelPnl(msg) => msg.req_id = request_id,

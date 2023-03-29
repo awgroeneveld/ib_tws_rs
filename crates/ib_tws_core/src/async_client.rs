@@ -14,10 +14,10 @@ use crate::{
     message::{
         constants::{MAX_VERSION, MIN_VERSION},
         request::{
-            Handshake, ReqAccountSummary, ReqContractDetails, ReqMarketDataType, ReqMktData,
+            Handshake, ReqAccountSummary, ReqContractDetails, ReqMarketDataType, ReqMktData, MatchingSymbol,
             ReqMktDepth, ReqMktDepthExchanges, ReqTickByTickData, SetServerLogLevel, StartApi, ReqHistoricalData,
         },
-        response::{AccountSummaryMsg, HandshakeAck, MktDepthExchangesMsg, HistoricalDataMsg},
+        response::{AccountSummaryMsg, HandshakeAck, MktDepthExchangesMsg, HistoricalDataMsg, SymbolSamplesMsg},
         Request, Response,
     },
     Error,
@@ -389,6 +389,27 @@ impl AsyncClient {
                 match response {
                     Response::ErrMsgMsg(err) => Some(Err(Error::ApiError(err))),
                     Response::HistoricalDataMsg(msg) => Some(Ok(msg)),
+                    _ => None,
+                }
+            }))
+            .try_next()
+            .await?
+            .ok_or(Error::ResponseChannelClosed)
+    }
+
+    #[instrument(skip(self))]
+    pub async fn request_matching_symbols(
+        &self,
+        message: MatchingSymbol,
+    ) -> Result<SymbolSamplesMsg, Error> {
+        let request_id = self.send(Request::MatchingSymbol(message)).await?;
+
+        Box::pin(self
+            .response_stream_by_id(Some(request_id))
+            .filter_map(|response| async move {
+                match response {
+                    Response::ErrMsgMsg(err) => Some(Err(Error::ApiError(err))),
+                    Response::SymbolSamplesMsg(msg) => Some(Ok(msg)),
                     _ => None,
                 }
             }))
