@@ -1,7 +1,7 @@
 [package]
 name = "ib_tws_core"
 description = "Core utilities for interacting with Interactive Broker's TWS API"
-version = "0.2.0-alpha.3"
+version = "0.2.1"
 edition = "2021"
 keywords = ["finance", "library", "interactive-brokers"]
 categories = ["encoding"]
@@ -23,7 +23,7 @@ rust_decimal_macros = "1"
 futures = { version = "0.3", optional = true }
 async-broadcast = { version = "0.4", optional = true }
 
-baseline = "0.2.0-alpha"
+baseline = "0.2.0"
 
 tracing = "0.1"
 thiserror = "1"
