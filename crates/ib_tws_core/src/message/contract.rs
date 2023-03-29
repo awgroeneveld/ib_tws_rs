@@ -218,7 +218,6 @@ pub fn decode_symbol_sample_msg(
 ) -> Result<(Response, i32), io::Error> {
     let req_id = buf.read_int()?;
     let count = buf.read_int()?;
-
     let mut contract_descriptions = Vec::new();
 
     for _ in 0..count {
@@ -235,11 +234,16 @@ pub fn decode_symbol_sample_msg(
         for _ in 0..types_count {
             derivative_sec_types.push(buf.read_string()?);
         }
+
+        if _ctx.server_version >= MIN_SERVER_VER_BOND_ISSUERID{
+            contract.description=buf.read_string()?;
+            contract.issuer_id=buf.read_string()?
+        }
+
         let description = ContractDescription {
             contract,
             derivative_sec_types,
         };
-
         contract_descriptions.push(description);
     }
 

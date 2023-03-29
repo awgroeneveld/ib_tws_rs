@@ -1,7 +1,7 @@
 use std::io;
-use std::{f64, i32};
 
 use bytes::BytesMut;
+
 
 use super::constants::*;
 use super::context::{Context, DispatchId};
@@ -11,6 +11,7 @@ use super::response::*;
 use super::util::*;
 use super::wire::{TwsWireDecoder, TwsWireEncoder};
 use crate::domain::*;
+use crate::domain::condition::{OrderCondition, PercentChange};
 
 // [NO REQ_ID]
 pub fn decode_open_order_msg(
@@ -489,10 +490,10 @@ fn order_condition_read(
             let conid = buf.read_int()?;
             let exchange = buf.read_string()?;
             let trigger_mode = buf.read_int()?;
-            Ok(OrderCondition::PriceCondition(PriceCondition {
+            Ok(OrderCondition::PriceCondition(condition::Price {
                 is_conjunction_connection,
                 is_more,
-                conid,
+                contract_id: conid,
                 exchange,
                 price,
                 trigger_mode,
@@ -503,7 +504,7 @@ fn order_condition_read(
             let is_conjunction_connection = buf.read_string()?.to_lowercase() == "a";
             let is_more = buf.read_bool()?;
             let time = buf.read_string()?;
-            Ok(OrderCondition::TimeCondition(TimeCondition {
+            Ok(OrderCondition::TimeCondition(condition::Time {
                 is_conjunction_connection,
                 is_more,
                 time,
@@ -514,7 +515,7 @@ fn order_condition_read(
             let is_conjunction_connection = buf.read_string()?.to_lowercase() == "a";
             let is_more = buf.read_bool()?;
             let percent = buf.read_int()?;
-            Ok(OrderCondition::MarginCondition(MarginCondition {
+            Ok(OrderCondition::MarginCondition(condition::Margin {
                 is_conjunction_connection,
                 is_more,
                 percent,
@@ -526,7 +527,7 @@ fn order_condition_read(
             let sec_type = buf.read_string()?;
             let exchange = buf.read_string()?;
             let symbol = buf.read_string()?;
-            Ok(OrderCondition::ExecutionCondition(ExecutionCondition {
+            Ok(OrderCondition::ExecutionCondition(condition::Execution {
                 is_conjunction_connection,
                 sec_type,
                 exchange,
@@ -542,7 +543,7 @@ fn order_condition_read(
             let conid = buf.read_int()?;
             let exchange = buf.read_string()?;
 
-            Ok(OrderCondition::VolumeCondition(VolumeCondition {
+            Ok(OrderCondition::VolumeCondition(condition::Volume {
                 is_conjunction_connection,
                 is_more,
                 conid,
@@ -560,7 +561,7 @@ fn order_condition_read(
             let exchange = buf.read_string()?;
 
             Ok(OrderCondition::PercentChangeCondition(
-                PercentChangeCondition {
+                PercentChange {
                     is_conjunction_connection,
                     is_more,
                     conid,
@@ -598,7 +599,7 @@ fn encoder_order_condition(buf: &mut BytesMut, order_condition: &OrderCondition)
             }
             buf.push_bool(pc.is_more);
             buf.push_double(pc.price); // value
-            buf.push_int(pc.conid);
+            buf.push_int(pc.contract_id);
             buf.push_string(&pc.exchange);
             buf.push_int(pc.trigger_mode);
         }

@@ -1,5 +1,4 @@
 use std::io;
-use std::{f64, i32};
 
 use approx::abs_diff_eq;
 use bit::BitIndex;

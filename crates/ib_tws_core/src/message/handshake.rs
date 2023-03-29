@@ -1,12 +1,12 @@
 use std::io;
 
-use bytes::{BufMut, BytesMut};
+use bytes::BytesMut;
 
-use super::constants::*;
+use super::constants::{OPCODE_HANDSHAKE, OPCODE_START_API};
 use super::context::{Context, DispatchId};
 use super::error::EncodeError;
-use super::request::*;
-use super::response::*;
+use super::request::{Handshake, StartApi};
+use super::response::HandshakeAck;
 use super::wire::{TwsWireDecoder, TwsWireEncoder};
 
 const NEXT_VALID_ID: i32 = 9;

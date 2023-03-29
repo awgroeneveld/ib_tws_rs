@@ -1,5 +1,4 @@
 use std::default::Default;
-use std::{f64, i32};
 
 #[derive(Debug, Clone)]
 pub struct ScannerSubscription {

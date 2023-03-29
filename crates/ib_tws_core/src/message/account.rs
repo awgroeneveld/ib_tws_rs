@@ -2,11 +2,11 @@ use std::io;
 
 use bytes::BytesMut;
 
-use super::constants::*;
+use super::constants::{CANCEL_ACCOUNT_SUMMARY, CANCEL_ACCOUNT_UPDATES_MULTI, MIN_SERVER_VER_FRACTIONAL_POSITIONS, MIN_SERVER_VER_MODELS_SUPPORT, OPCODE_PORTFOLIO_VALUE, OPCODE_REQ_ACCOUNT_UPDATES, OPCODE_REQ_MANAGED_ACCTS, REQ_ACCOUNT_DATA, REQ_ACCOUNT_SUMMARY, REQ_ACCOUNT_UPDATES_MULTI, REQ_MANAGED_ACCTS};
 use super::context::{Context, DispatchId};
 use super::error::EncodeError;
-use super::request::*;
-use super::response::*;
+use super::request::{CancelAccountSummary, CancelAccountUpdatesMulti, ReqAccountSummary, ReqAccountUpdates, ReqAccountUpdatesMulti, ReqManagedAccts};
+use super::response::{AccountSummaryEndMsg, AccountSummaryMsg, AccountUpdateMultiEndMsg, AccountUpdateMultiMsg, AcctDownloadEndMsg, AcctUpdateTimeMsg, AcctValueMsg, ManagedAcctsMsg, PortfolioValueMsg, Response};
 use super::wire::{TwsWireDecoder, TwsWireEncoder};
 use crate::domain::Contract;
 
@@ -41,7 +41,7 @@ pub fn decode_portfolio_value_msg(
     buf: &mut BytesMut,
 ) -> Result<(Response, i32), io::Error> {
     let version = buf.read_int()?;
-    let mut contract: Contract = Default::default();
+    let mut contract: Contract = Contract::default();
     if version >= 6 {
         contract.con_id = buf.read_int()?;
     }
@@ -90,7 +90,7 @@ pub fn decode_portfolio_value_msg(
     let account_name = if version >= 4 {
         buf.read_string()?
     } else {
-        "".to_string()
+        String::new()
     };
 
     if version == 6 && ctx.server_version() == 39 {
@@ -137,7 +137,7 @@ pub fn decode_acct_value_msg(
     let account_name = if version >= 2 {
         buf.read_string()?
     } else {
-        "".to_string()
+        String::new()
     };
 
     Ok((
@@ -288,11 +288,11 @@ pub fn encode_req_account_updates_multi(
     buf: &mut BytesMut,
     req: &ReqAccountUpdatesMulti,
 ) -> Result<DispatchId, EncodeError> {
+    const VERSION: i32 = 1;
+
     if ctx.server_version() < MIN_SERVER_VER_MODELS_SUPPORT {
         return Err(EncodeError::VersionLessError(MIN_SERVER_VER_MODELS_SUPPORT));
     }
-
-    const VERSION: i32 = 1;
 
     buf.push_int(REQ_ACCOUNT_UPDATES_MULTI);
     buf.push_int(VERSION);

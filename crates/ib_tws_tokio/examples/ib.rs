@@ -1,16 +1,14 @@
 #[macro_use]
 extern crate tracing;
 
-use std::collections::HashSet;
 use std::string::ToString;
 use std::time::Duration;
 
 use futures::{StreamExt, TryStreamExt};
 use ib_tws_core::domain::{self, Contract};
-use ib_tws_core::domain::market_data::{GenericTick, MarketDataType, TickByTickType};
+use ib_tws_core::domain::market_data::{MarketDataType, TickByTickType};
 use ib_tws_core::message::{request::*, Response};
 use miette::IntoDiagnostic;
-use sugars::hset;
 
 #[tokio::main]
 async fn main() -> miette::Result<()> {

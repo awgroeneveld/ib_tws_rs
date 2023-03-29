@@ -1,6 +1,5 @@
 // Context for Request & Response
 use std::collections::HashMap;
-use std::i32;
 use std::io;
 use std::str;
 

@@ -62,6 +62,10 @@ pub struct Contract {
     pub combo_legs_descrip: String,
     // received in open order version 14 and up for all combos
     pub combo_legs: Vec<ComboLeg>,
+
+    pub description: String,
+    pub issuer_id: String
+
 }
 
 impl Contract {

@@ -1,12 +1,8 @@
-use std::{
-    pin::{self, Pin},
-    task::{Context, Poll},
-};
 
 use futures::{
     channel::{mpsc, oneshot},
     future::Either,
-    stream, Future, FutureExt, Stream, StreamExt, TryFutureExt, TryStreamExt,
+    stream, Stream, StreamExt, TryFutureExt,
 };
 
 #[derive(Debug, Clone, thiserror::Error, miette::Diagnostic)]
@@ -44,8 +40,8 @@ impl<T, R, E> Commander<T, R, E> {
     pub async fn send(&self, req: T) -> Result<Result<R, E>> {
         let (tx, rx) = oneshot::channel();
         match self.0.unbounded_send((req, ReplySender::Oneshot(tx))) {
-            Ok(()) => Either::Left(rx.map_err(|e| Error::FailedToReceiveOneshotResponse)),
-            Err(e) => Either::Right(async { Err(Error::FailedToSendNewRequest) }),
+            Ok(()) => Either::Left(rx.map_err(|_| Error::FailedToReceiveOneshotResponse)),
+            Err(_) => Either::Right(async { Err(Error::FailedToSendNewRequest) }),
         }
         .await
     }
@@ -54,8 +50,8 @@ impl<T, R, E> Commander<T, R, E> {
         let (tx, rx) = mpsc::unbounded();
 
         match self.0.unbounded_send((req, ReplySender::Stream(tx))) {
-            Ok(()) => Either::Left(rx.map(|o| Ok(o))),
-            Err(e) => Either::Right(stream::once(async {
+            Ok(()) => Either::Left(rx.map(Ok)),
+            Err(_) => Either::Right(stream::once(async {
                 Err(Error::FailedToSubscribeNewRequest)
             })),
         }

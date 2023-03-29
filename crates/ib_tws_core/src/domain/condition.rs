@@ -2,7 +2,6 @@
 //use encoder::buf::TwsEncoder;
 
 use std::convert::From;
-use std::{f64, i32};
 // PriceConditionTriggerMode
 
 pub const PTM_DEFAULT: i32 = 0;
@@ -14,31 +13,31 @@ pub const PTM_LAST_OF_BID_ASK: i32 = 7;
 pub const PTM_MID_POINT: i32 = 8;
 
 #[derive(Debug, Clone)]
-pub struct PriceCondition {
+pub struct Price {
     pub is_conjunction_connection: bool,
     pub is_more: bool,
-    pub conid: i32,
+    pub contract_id: i32,
     pub exchange: String,
     pub price: f64,
     pub trigger_mode: i32,
 }
 
 #[derive(Debug, Clone)]
-pub struct TimeCondition {
+pub struct Time {
     pub is_conjunction_connection: bool,
     pub is_more: bool,
     pub time: String,
 }
 
 #[derive(Debug, Clone)]
-pub struct MarginCondition {
+pub struct Margin {
     pub is_conjunction_connection: bool,
     pub is_more: bool,
     pub percent: i32,
 }
 
 #[derive(Debug, Clone)]
-pub struct ExecutionCondition {
+pub struct Execution {
     // inherit orderCondition
     pub is_conjunction_connection: bool,
     pub sec_type: String,
@@ -47,7 +46,7 @@ pub struct ExecutionCondition {
 }
 
 #[derive(Debug, Clone)]
-pub struct VolumeCondition {
+pub struct Volume {
     // inherit ContractCondition
     pub is_conjunction_connection: bool,
     pub is_more: bool,
@@ -57,7 +56,7 @@ pub struct VolumeCondition {
 }
 
 #[derive(Debug, Clone)]
-pub struct PercentChangeCondition {
+pub struct PercentChange {
     // inherit ContractCondition
     pub is_conjunction_connection: bool,
     pub is_more: bool,
@@ -68,12 +67,12 @@ pub struct PercentChangeCondition {
 
 #[derive(Debug, Clone)]
 pub enum OrderCondition {
-    PriceCondition(PriceCondition),
-    TimeCondition(TimeCondition),
-    MarginCondition(MarginCondition),
-    ExecutionCondition(ExecutionCondition),
-    VolumeCondition(VolumeCondition),
-    PercentChangeCondition(PercentChangeCondition),
+    PriceCondition(Price),
+    TimeCondition(Time),
+    MarginCondition(Margin),
+    ExecutionCondition(Execution),
+    VolumeCondition(Volume),
+    PercentChangeCondition(PercentChange),
 }
 
 impl OrderCondition {

@@ -2,7 +2,6 @@ use std::io;
 use std::str;
 use std::str::FromStr;
 use std::vec::Vec;
-use std::{f64, i32};
 
 use bytes::Buf;
 use bytes::BytesMut;

@@ -1,6 +1,5 @@
 use std::fmt;
 use std::str::FromStr;
-use std::{f64, i32};
 
 use crate::domain::condition::OrderCondition;
 use crate::domain::soft_dollar_tier::SoftDollarTier;
@@ -422,7 +421,7 @@ impl Default for Order {
             scale_price_increment: f64::MAX,
             scale_price_adjust_value: f64::MAX,
             scale_price_adjust_interval: i32::MAX,
-            scale_profit_offset: f64::MAX,
+            scale_profit_offset: f64:: MAX,
             scale_auto_reset: false,
             scale_init_position: i32::MAX,
             scale_init_fill_qty: i32::MAX,

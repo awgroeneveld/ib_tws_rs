@@ -56,7 +56,7 @@ pub fn decode_histogram_data_msg(
     for _ in 0..n {
         let price = buf.read_double()?;
         let size = buf.read_long()?;
-        items.push(HistogramEntry { price, size })
+        items.push(HistogramEntry { price, size });
     }
 
     Ok((
